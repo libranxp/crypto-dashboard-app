@@ -3,12 +3,13 @@
 <head>
   <title>Crypto Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <h1>Crypto Dashboard</h1>
-  <button onclick="refresh()">Manual Refresh</button>
+  <button onclick="refresh()">Refresh</button>
   <div id="dashboard"></div>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <canvas id="chart" width="600" height="300"></canvas>
   <script src="script.js"></script>
 </body>
 </html>
