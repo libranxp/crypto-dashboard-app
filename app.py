@@ -1,26 +1,21 @@
-from flask import Flask, jsonify, request
-from indicators import compute_indicators
-from alert import send_telegram_alert
 from discover import discover_tickers
+from indicators import compute_indicators
+from sentiment import fetch_sentiment
+from alert import send_telegram_alert
+from save import save_to_dashboard
 
-app = Flask(__name__)
-
-@app.route('/scan', methods=['POST'])
-def scan():
-    tickers = request.json.get('tickers') or discover_tickers()
+def run_scan():
+    tickers = discover_tickers()
     results = []
     for symbol in tickers:
         try:
             data = compute_indicators(symbol)
+            data['sentiment'] = fetch_sentiment(symbol)
             send_telegram_alert(data)
             results.append(data)
         except Exception as e:
-            results.append({'symbol': symbol, 'error': str(e)})
-    return jsonify(results)
+            print(f"Error for {symbol}: {e}")
+    save_to_dashboard(results)
 
-@app.route('/')
-def home():
-    return "Dashboard backend is running."
-
-if __name__ == '__main__':
-    app.run(debug=False)
+if __name__ == "__main__":
+    run_scan()
