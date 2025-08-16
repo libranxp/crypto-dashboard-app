@@ -1,4 +1,4 @@
-from discover import discover_tickers
+from scanner import scan_tickers
 from indicators import get_indicators
 from enrichment.news_newsapi import get_news_score
 from alert import send_alert
@@ -10,8 +10,8 @@ def enrich(symbol):
         indicators = get_indicators(symbol)
         news_score = get_news_score(symbol)
 
-        if not indicators or news_score is None:
-            print(f"⚠️ Skipping {symbol} due to missing data")
+        if not indicators or news_score is None or news_score < 0.6:
+            print(f"⚠️ Skipping {symbol} due to missing or weak data")
             return None
 
         TP = round(indicators["price"] * 1.1, 2)
@@ -23,23 +23,22 @@ def enrich(symbol):
             "RSI": indicators["RSI"],
             "MACD": indicators["MACD"],
             "RVOL": indicators["RVOL"],
+            "EMA": indicators["EMA"],
+            "VWAP": indicators["VWAP"],
             "news_score": news_score,
             "TP": TP,
             "SL": SL
         }
 
-        if asset["RSI"] < 30 and asset["MACD"] > 0 and asset["RVOL"] > 2 and asset["news_score"] > 0.5:
-            print(f"📣 Sending alert for {symbol}")
-            send_alert(asset)
-
+        send_alert(asset)
         return asset
     except Exception as e:
         print(f"❌ Error enriching {symbol}: {e}")
         return None
 
 def main():
-    tickers = discover_tickers()
-    print(f"✅ Discovered {len(tickers)} tickers")
+    tickers = scan_tickers()
+    print(f"✅ Scanner found {len(tickers)} qualifying tickers")
 
     enriched = []
     for symbol in tickers:
@@ -48,7 +47,6 @@ def main():
             enriched.append(asset)
 
     save_to_json(enriched)
-    print(f"✅ Saved {len(enriched)} assets to docs/data.json")
 
 if __name__ == "__main__":
     main()
