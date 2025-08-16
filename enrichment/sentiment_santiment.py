@@ -1,23 +1,29 @@
 import requests, os
 
-def fetch_santiment_data(symbol):
-    key = os.getenv("API_KEY_SANTIMENT")
-    url = "https://api.santiment.net/graphql"
-    headers = {"Authorization": f"Bearer {key}"}
-    query = """
-    {
-      getMetric(metric: "social_volume_total") {
-        timeseriesData(slug: "%s", from: "now-1d", to: "now", interval: "1h") {
-          datetime
-          value
-        }
-      }
-    }
-    """ % symbol.lower()
+API_KEY = os.getenv("API_KEY_SANTIMENT")
 
+def get_santiment_sentiment(symbol):
+    url = f"https://api.santiment.net/graphql"
+    headers = {"Authorization": f"Apikey {API_KEY}"}
+    query = {
+        "query": f"""
+        {{
+          getMetric(metric: "sentiment_positive_total") {{
+            timeseriesData(
+              slug: "{symbol.lower()}"
+              from: "now-1d"
+              to: "now"
+              interval: "1d"
+            ) {{
+              value
+            }}
+          }}
+        }}
+        """
+    }
+    res = requests.post(url, json=query, headers=headers).json()
     try:
-        res = requests.post(url, json={'query': query}, headers=headers).json()
-        data = res.get('data', {}).get('getMetric', {}).get('timeseriesData', [])
-        return {'social_volume': data}
-    except Exception as e:
-        return {'error': str(e)}
+        val = res["data"]["getMetric"]["timeseriesData"][0]["value"]
+        return round(float(val), 2)
+    except:
+        return None
