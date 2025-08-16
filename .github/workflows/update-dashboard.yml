@@ -1,0 +1,44 @@
+name: Update Crypto Dashboard
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'     # BST: every hour at :00
+    - cron: '45 * * * *'    # BST: every hour at :45
+
+jobs:
+  update-dashboard:
+    runs-on: ubuntu-latest
+
+    env:
+      API_KEY_ALPHA: ${{ secrets.API_KEY_ALPHA }}
+      API_KEY_LUNARCRUSH: ${{ secrets.API_KEY_LUNARCRUSH }}
+      API_KEY_SANTIMENT: ${{ secrets.API_KEY_SANTIMENT }}
+      API_KEY_NEWSAPI: ${{ secrets.API_KEY_NEWSAPI }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run dashboard scan
+        run: python app.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add docs/data.json
+          git commit -m "🔄 Update dashboard data"
+          git push https://${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git HEAD:main
