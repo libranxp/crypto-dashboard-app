@@ -176,12 +176,12 @@
     "error": "No data for TAO"
   },
   {
-    "symbol": "NEAR",
-    "error": "No data for NEAR"
-  },
-  {
     "symbol": "ETC",
     "error": "No data for ETC"
+  },
+  {
+    "symbol": "NEAR",
+    "error": "No data for NEAR"
   },
   {
     "symbol": "APT",
