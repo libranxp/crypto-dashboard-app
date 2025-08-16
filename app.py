@@ -4,17 +4,15 @@ from modules.enrich import enrich_asset
 from modules.alert import send_telegram_alert
 
 def main():
-    assets = discover_assets()  # ✅ Dynamic discovery
+    assets = discover_assets()
     enriched = []
 
     for asset in assets:
         try:
             data = enrich_asset(asset)
-            enriched.append(data)
-
-            if data.get("signal") == "strong":
+            if data.get("meets_criteria"):
+                enriched.append(data)
                 send_telegram_alert(data)
-
         except Exception as e:
             print(f"Error enriching {asset}: {e}")
 
