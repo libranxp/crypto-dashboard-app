@@ -1,0 +1,402 @@
+[
+  {
+    "symbol": "BTC",
+    "error": "list index out of range"
+  },
+  {
+    "symbol": "ETH",
+    "error": "list index out of range"
+  },
+  {
+    "symbol": "XRP",
+    "error": "list index out of range"
+  },
+  {
+    "symbol": "USDT",
+    "error": "'close'"
+  },
+  {
+    "symbol": "BNB",
+    "error": "No data for BNB"
+  },
+  {
+    "symbol": "SOL",
+    "error": "list index out of range"
+  },
+  {
+    "symbol": "USDC",
+    "error": "No data for USDC"
+  },
+  {
+    "symbol": "STETH",
+    "error": "No data for STETH"
+  },
+  {
+    "symbol": "DOGE",
+    "error": "'close'"
+  },
+  {
+    "symbol": "ADA",
+    "error": "list index out of range"
+  },
+  {
+    "symbol": "TRX",
+    "error": "No data for TRX"
+  },
+  {
+    "symbol": "WSTETH",
+    "error": "No data for WSTETH"
+  },
+  {
+    "symbol": "HYPE",
+    "error": "No data for HYPE"
+  },
+  {
+    "symbol": "LINK",
+    "error": "'close'"
+  },
+  {
+    "symbol": "WBTC",
+    "error": "list index out of range"
+  },
+  {
+    "symbol": "WBETH",
+    "error": "No data for WBETH"
+  },
+  {
+    "symbol": "XLM",
+    "error": "list index out of range"
+  },
+  {
+    "symbol": "SUI",
+    "error": "No data for SUI"
+  },
+  {
+    "symbol": "WEETH",
+    "error": "No data for WEETH"
+  },
+  {
+    "symbol": "BCH",
+    "error": "list index out of range"
+  },
+  {
+    "symbol": "USDE",
+    "error": "No data for USDE"
+  },
+  {
+    "symbol": "HBAR",
+    "error": "'close'"
+  },
+  {
+    "symbol": "AVAX",
+    "error": "list index out of range"
+  },
+  {
+    "symbol": "WETH",
+    "error": "No data for WETH"
+  },
+  {
+    "symbol": "LTC",
+    "error": "list index out of range"
+  },
+  {
+    "symbol": "TON",
+    "error": "No data for TON"
+  },
+  {
+    "symbol": "LEO",
+    "error": "No data for LEO"
+  },
+  {
+    "symbol": "USDS",
+    "error": "No data for USDS"
+  },
+  {
+    "symbol": "SHIB",
+    "error": "No data for SHIB"
+  },
+  {
+    "symbol": "BSC-USD",
+    "error": "No data for BSC-USD"
+  },
+  {
+    "symbol": "UNI",
+    "error": "No data for UNI"
+  },
+  {
+    "symbol": "WBT",
+    "error": "No data for WBT"
+  },
+  {
+    "symbol": "CBBTC",
+    "error": "No data for CBBTC"
+  },
+  {
+    "symbol": "DOT",
+    "error": "No data for DOT"
+  },
+  {
+    "symbol": "SUSDE",
+    "error": "No data for SUSDE"
+  },
+  {
+    "symbol": "BGB",
+    "error": "No data for BGB"
+  },
+  {
+    "symbol": "CRO",
+    "error": "No data for CRO"
+  },
+  {
+    "symbol": "ENA",
+    "error": "No data for ENA"
+  },
+  {
+    "symbol": "XMR",
+    "error": "No data for XMR"
+  },
+  {
+    "symbol": "PEPE",
+    "error": "No data for PEPE"
+  },
+  {
+    "symbol": "AAVE",
+    "error": "No data for AAVE"
+  },
+  {
+    "symbol": "MNT",
+    "error": "No data for MNT"
+  },
+  {
+    "symbol": "DAI",
+    "error": "No data for DAI"
+  },
+  {
+    "symbol": "TAO",
+    "error": "No data for TAO"
+  },
+  {
+    "symbol": "NEAR",
+    "error": "No data for NEAR"
+  },
+  {
+    "symbol": "ETC",
+    "error": "No data for ETC"
+  },
+  {
+    "symbol": "APT",
+    "error": "No data for APT"
+  },
+  {
+    "symbol": "ONDO",
+    "error": "No data for ONDO"
+  },
+  {
+    "symbol": "PI",
+    "error": "No data for PI"
+  },
+  {
+    "symbol": "ICP",
+    "error": "No data for ICP"
+  },
+  {
+    "symbol": "JITOSOL",
+    "error": "No data for JITOSOL"
+  },
+  {
+    "symbol": "WETH",
+    "error": "No data for WETH"
+  },
+  {
+    "symbol": "ARB",
+    "error": "No data for ARB"
+  },
+  {
+    "symbol": "BUIDL",
+    "error": "No data for BUIDL"
+  },
+  {
+    "symbol": "KAS",
+    "error": "No data for KAS"
+  },
+  {
+    "symbol": "ALGO",
+    "error": "No data for ALGO"
+  },
+  {
+    "symbol": "OKB",
+    "error": "No data for OKB"
+  },
+  {
+    "symbol": "USD1",
+    "error": "No data for USD1"
+  },
+  {
+    "symbol": "POL",
+    "error": "No data for POL"
+  },
+  {
+    "symbol": "VET",
+    "error": "No data for VET"
+  },
+  {
+    "symbol": "ATOM",
+    "error": "No data for ATOM"
+  },
+  {
+    "symbol": "GT",
+    "error": "No data for GT"
+  },
+  {
+    "symbol": "PENGU",
+    "error": "No data for PENGU"
+  },
+  {
+    "symbol": "RETH",
+    "error": "No data for RETH"
+  },
+  {
+    "symbol": "RENDER",
+    "error": "No data for RENDER"
+  },
+  {
+    "symbol": "FTN",
+    "error": "No data for FTN"
+  },
+  {
+    "symbol": "BNSOL",
+    "error": "No data for BNSOL"
+  },
+  {
+    "symbol": "SEI",
+    "error": "No data for SEI"
+  },
+  {
+    "symbol": "SUSDS",
+    "error": "No data for SUSDS"
+  },
+  {
+    "symbol": "RSETH",
+    "error": "No data for RSETH"
+  },
+  {
+    "symbol": "BONK",
+    "error": "No data for BONK"
+  },
+  {
+    "symbol": "WLD",
+    "error": "No data for WLD"
+  },
+  {
+    "symbol": "FET",
+    "error": "No data for FET"
+  },
+  {
+    "symbol": "TRUMP",
+    "error": "No data for TRUMP"
+  },
+  {
+    "symbol": "JLP",
+    "error": "No data for JLP"
+  },
+  {
+    "symbol": "FLR",
+    "error": "No data for FLR"
+  },
+  {
+    "symbol": "IP",
+    "error": "No data for IP"
+  },
+  {
+    "symbol": "FIL",
+    "error": "No data for FIL"
+  },
+  {
+    "symbol": "OSETH",
+    "error": "No data for OSETH"
+  },
+  {
+    "symbol": "KCS",
+    "error": "No data for KCS"
+  },
+  {
+    "symbol": "USDT0",
+    "error": "No data for USDT0"
+  },
+  {
+    "symbol": "LSETH",
+    "error": "No data for LSETH"
+  },
+  {
+    "symbol": "SKY",
+    "error": "No data for SKY"
+  },
+  {
+    "symbol": "LBTC",
+    "error": "No data for LBTC"
+  },
+  {
+    "symbol": "JUP",
+    "error": "No data for JUP"
+  },
+  {
+    "symbol": "QNT",
+    "error": "No data for QNT"
+  },
+  {
+    "symbol": "USDTB",
+    "error": "No data for USDTB"
+  },
+  {
+    "symbol": "INJ",
+    "error": "No data for INJ"
+  },
+  {
+    "symbol": "METH",
+    "error": "No data for METH"
+  },
+  {
+    "symbol": "XDC",
+    "error": "No data for XDC"
+  },
+  {
+    "symbol": "SPX",
+    "error": "No data for SPX"
+  },
+  {
+    "symbol": "KHYPE",
+    "error": "No data for KHYPE"
+  },
+  {
+    "symbol": "TIA",
+    "error": "No data for TIA"
+  },
+  {
+    "symbol": "NEXO",
+    "error": "No data for NEXO"
+  },
+  {
+    "symbol": "USDF",
+    "error": "No data for USDF"
+  },
+  {
+    "symbol": "HASH",
+    "error": "No data for HASH"
+  },
+  {
+    "symbol": "EZETH",
+    "error": "No data for EZETH"
+  },
+  {
+    "symbol": "USDT",
+    "error": "No data for USDT"
+  },
+  {
+    "symbol": "OP",
+    "error": "No data for OP"
+  },
+  {
+    "symbol": "STX",
+    "error": "No data for STX"
+  }
+]
