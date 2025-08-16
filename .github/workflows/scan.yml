@@ -2,7 +2,7 @@ name: Auto Crypto Scanner
 
 on:
   schedule:
-    - cron: '*/45 * * * *'  # Every 45 minutes
+    - cron: '*/45 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -28,10 +28,12 @@ jobs:
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: python app.py
 
-    - name: Commit dashboard update
+    - name: Push updated dashboard
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
       run: |
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
         git add docs/data.json
         git commit -m "Update dashboard data"
-        git push
+        git push https://x-access-token:${GH_PAT}@github.com/${{ github.repository }} HEAD:main
