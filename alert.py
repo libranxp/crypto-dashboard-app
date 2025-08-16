@@ -3,10 +3,10 @@ import os, requests
 def format_alert(data):
     return (
         f"📣 Signal Alert: {data['symbol']}\n"
-        f"💰 Price: {data['price']}\n"
+        f"💰 Price: {data['price']} | TP: {data['TP']} | SL: {data['SL']}\n"
         f"📊 RSI: {data['RSI']} | EMA: {data['EMA']} | VWAP: {data['VWAP']}\n"
         f"📈 MACD: {data['MACD']} | RVOL: {data['RVOL']}\n"
-        f"✅ Validation: MACD crossover + volume surge\n"
+        f"🧠 Sentiment Score: {data['sentiment']}\n"
     )
 
 def send_telegram_alert(data):
