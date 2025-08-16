@@ -11,7 +11,7 @@ def discover_tickers():
     }
     try:
         res = requests.get(url, params=params).json()
-        tickers = [coin["symbol"].upper() for coin in res if coin.get("symbol")]
+        tickers = [coin["id"] for coin in res if coin.get("id")]
         print(f"✅ Fetched {len(tickers)} tickers from CoinGecko")
         return tickers
     except Exception as e:
