@@ -1,22 +1,12 @@
-import requests, os
+from enrichment.sentiment_lunarcrush import get_lunarcrush_sentiment
+from enrichment.sentiment_santiment import get_santiment_sentiment
 
-def enrich_sentiment(symbol):
-    key = os.getenv("API_KEY_SANTIMENT")
-    url = "https://api.santiment.net/graphql"
-    headers = {"Authorization": f"Bearer {key}"}
-    query = {
-        "query": """
-        {
-          getMetric(metric: "sentiment_positive_total") {
-            timeseriesData(slug: "%s", from: "now-1d", to: "now", interval: "1d") {
-              value
-            }
-          }
-        }
-        """ % symbol.lower()
-    }
-    r = requests.post(url, json=query, headers=headers).json()
-    try:
-        return r["data"]["getMetric"]["timeseriesData"][0]["value"]
-    except:
-        return 0
+def get_sentiment(symbol):
+    scores = []
+    lunar = get_lunarcrush_sentiment(symbol)
+    if lunar is not None:
+        scores.append(lunar)
+    santiment = get_santiment_sentiment(symbol)
+    if santiment is not None:
+        scores.append(santiment)
+    return round(sum(scores) / len(scores), 2) if scores else None
