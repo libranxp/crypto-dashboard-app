@@ -4,26 +4,20 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 * * * *'
-    - cron: '45 * * * *'
+    - cron: '30 * * * *'
 
 jobs:
   update-dashboard:
     runs-on: ubuntu-latest
 
     env:
-      API_KEY_ALPHA: ${{ secrets.API_KEY_ALPHA }}
-      API_KEY_LUNARCRUSH: ${{ secrets.API_KEY_LUNARCRUSH }}
-      API_KEY_SANTIMENT: ${{ secrets.API_KEY_SANTIMENT }}
-      API_KEY_NEWSAPI: ${{ secrets.API_KEY_NEWSAPI }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-      GH_PAT: ${{ secrets.GH_PAT }}
+      CRYPTOCOMPARE_API_KEY: ${{ secrets.CRYPTOCOMPARE_API_KEY }}
 
     steps:
-      - name: Checkout repo with PAT
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GH_PAT }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -35,17 +29,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run dashboard scan
+      - name: Run scanner and enrichment
         run: python app.py
 
-      - name: Commit updated data
+      - name: Commit updated dashboard data
         run: |
-          git config user.name "libranxp"
-          git config user.email "libranxp@users.noreply.github.com"
-          git add docs/data.json
+          git config user.name "Faisal"
+          git config user.email "faisal@users.noreply.github.com"
+          git add docs/data.json docs/alerts.json
           git diff --cached --quiet || git commit -m "🔄 Update dashboard data"
-
-      - name: Push changes using PAT
-        run: |
-          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
-          git push origin HEAD:main
+          git push
