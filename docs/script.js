@@ -5,6 +5,11 @@ async function refresh() {
     const container = document.getElementById("dashboard");
     container.innerHTML = "";
 
+    if (!Array.isArray(data) || data.length === 0) {
+      container.innerHTML = "<p>No data available.</p>";
+      return;
+    }
+
     data.forEach(asset => {
       const card = document.createElement("div");
       card.className = "card";
