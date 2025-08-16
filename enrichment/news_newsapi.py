@@ -1,11 +1,15 @@
 import requests, os
 
-def fetch_news(symbol):
-    key = os.getenv("API_KEY_NEWSAPI")
-    url = f"https://newsapi.org/v2/everything?q={symbol}&apiKey={key}&language=en&sortBy=publishedAt"
-    try:
-        res = requests.get(url).json()
-        articles = res.get('articles', [])[:3]
-        return [{'title': a['title'], 'url': a['url'], 'publishedAt': a['publishedAt']} for a in articles]
-    except Exception as e:
-        return {'error': str(e)}
+API_KEY = os.getenv("API_KEY_NEWSAPI")
+
+def get_news_score(symbol):
+    url = "https://newsapi.org/v2/everything"
+    params = {
+        "q": symbol,
+        "language": "en",
+        "sortBy": "publishedAt",
+        "apiKey": API_KEY
+    }
+    res = requests.get(url, params=params).json()
+    articles = res.get("articles", [])
+    return round(min(len(articles), 100) / 100, 2)
