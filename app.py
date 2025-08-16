@@ -1,6 +1,5 @@
 from discover import discover_tickers
 from indicators import get_indicators
-from enrichment.catalyst_coingecko import get_price
 from enrichment.news_newsapi import get_news_score
 from alert import send_alert
 from save import save_to_json
@@ -8,20 +7,19 @@ from save import save_to_json
 def enrich(symbol):
     print(f"🔍 Enriching {symbol}")
     try:
-        price = get_price(symbol)
         indicators = get_indicators(symbol)
         news_score = get_news_score(symbol)
 
-        if not price or not indicators or news_score is None:
+        if not indicators or news_score is None:
             print(f"⚠️ Skipping {symbol} due to missing data")
             return None
 
-        TP = round(price * 1.1, 2)
-        SL = round(price * 0.9, 2)
+        TP = round(indicators["price"] * 1.1, 2)
+        SL = round(indicators["price"] * 0.9, 2)
 
         asset = {
             "symbol": symbol,
-            "price": price,
+            "price": indicators["price"],
             "RSI": indicators["RSI"],
             "MACD": indicators["MACD"],
             "RVOL": indicators["RVOL"],
