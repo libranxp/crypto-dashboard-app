@@ -5,10 +5,9 @@ def discover_tickers():
     params = {
         "vs_currency": "usd",
         "order": "market_cap_desc",
-        "per_page": 100,
+        "per_page": 50,
         "page": 1,
         "sparkline": False
     }
     r = requests.get(url, params=params).json()
-    tickers = [coin['symbol'].upper() for coin in r if coin['market_cap'] > 1e9]
-    return tickers
+    return [coin["symbol"].upper() for coin in r]
