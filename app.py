@@ -1,4 +1,3 @@
-import json
 from discover import discover_tickers
 from indicators import get_indicators
 from sentiment import get_sentiment
@@ -8,6 +7,7 @@ from alert import send_alert
 from save import save_to_json
 
 def enrich(symbol):
+    print(f"🔍 Enriching {symbol}")
     try:
         price = get_price(symbol)
         indicators = get_indicators(symbol)
@@ -33,6 +33,7 @@ def enrich(symbol):
         }
 
         if asset["RSI"] < 30 and asset["MACD"] > 0 and asset["RVOL"] > 2 and asset["sentiment_score"] > 0.5:
+            print(f"📣 Sending alert for {symbol}")
             send_alert(asset)
 
         return asset
@@ -42,8 +43,9 @@ def enrich(symbol):
 
 def main():
     tickers = discover_tickers()
-    enriched = []
+    print(f"✅ Discovered {len(tickers)} tickers")
 
+    enriched = []
     for symbol in tickers:
         asset = enrich(symbol)
         if asset:
