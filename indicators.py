@@ -1,65 +1,47 @@
-import requests, os
+import requests
 
-def get_indicators(symbol):
-    key = os.getenv("API_KEY_ALPHA")
-    if not key:
-        print("⚠️ Alpha Vantage API key missing")
-        return None
-
+def get_indicators(coin_id):
     try:
-        # RSI
-        rsi_url = "https://www.alphavantage.co/query"
-        rsi_params = {
-            "function": "RSI",
-            "symbol": symbol,
-            "interval": "60min",
-            "time_period": 14,
-            "series_type": "close",
-            "apikey": key
+        url = f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart"
+        params = {
+            "vs_currency": "usd",
+            "days": 2,
+            "interval": "hourly"
         }
-        rsi_res = requests.get(rsi_url, params=rsi_params).json()
-        rsi_data = rsi_res.get("Technical Analysis: RSI", {})
-        latest_rsi = next(iter(rsi_data.values()), {}).get("RSI")
-        rsi = round(float(latest_rsi), 2) if latest_rsi else None
+        res = requests.get(url, params=params).json()
+        prices = [p[1] for p in res.get("prices", [])]
+        volumes = [v[1] for v in res.get("total_volumes", [])]
+
+        if len(prices) < 30 or len(volumes) < 2:
+            print(f"⚠️ Not enough data for {coin_id}")
+            return None
+
+        # RSI
+        deltas = [prices[i] - prices[i-1] for i in range(1, len(prices))]
+        gains = [d for d in deltas if d > 0]
+        losses = [-d for d in deltas if d < 0]
+        avg_gain = sum(gains[-14:]) / 14 if gains else 0.01
+        avg_loss = sum(losses[-14:]) / 14 if losses else 0.01
+        rs = avg_gain / avg_loss
+        rsi = round(100 - (100 / (1 + rs)), 2)
 
         # MACD
-        macd_params = {
-            "function": "MACD",
-            "symbol": symbol,
-            "interval": "60min",
-            "series_type": "close",
-            "apikey": key
-        }
-        macd_res = requests.get(rsi_url, params=macd_params).json()
-        macd_data = macd_res.get("Technical Analysis: MACD", {})
-        latest_macd = next(iter(macd_data.values()), {})
-        macd = round(float(latest_macd.get("MACD", 0)), 2)
+        ema12 = sum(prices[-12:]) / 12
+        ema26 = sum(prices[-26:]) / 26
+        macd = round(ema12 - ema26, 2)
 
-        # RVOL (Relative Volume)
-        price_url = "https://www.alphavantage.co/query"
-        price_params = {
-            "function": "TIME_SERIES_INTRADAY",
-            "symbol": symbol,
-            "interval": "60min",
-            "apikey": key
-        }
-        price_res = requests.get(price_url, params=price_params).json()
-        series = price_res.get("Time Series (60min)", {})
-        volumes = [float(v["5. volume"]) for v in series.values()]
-        if len(volumes) < 2:
-            print(f"⚠️ Not enough volume data for {symbol}")
-            return None
-        current_volume = volumes[0]
-        avg_volume = sum(volumes[1:]) / len(volumes[1:])
+        # RVOL
+        current_volume = volumes[-1]
+        avg_volume = sum(volumes[-30:-1]) / 29
         rvol = round(current_volume / avg_volume, 2)
 
-        print(f"✅ Indicators for {symbol}: RSI={rsi}, MACD={macd}, RVOL={rvol}")
         return {
+            "price": round(prices[-1], 2),
             "RSI": rsi,
             "MACD": macd,
             "RVOL": rvol
         }
 
     except Exception as e:
-        print(f"❌ Indicator fetch error for {symbol}: {e}")
+        print(f"❌ Indicator error for {coin_id}: {e}")
         return None
