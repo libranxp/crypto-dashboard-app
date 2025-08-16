@@ -1,23 +1,45 @@
 import json
-from modules.discovery import discover_assets
-from modules.enrich import enrich_asset
-from modules.alert import send_telegram_alert
+from discover import discover_tickers
+from indicators import compute_indicators
+from sentiment import enrich_sentiment
+from enrichment.sentiment_lunarcrush import fetch_lunarcrush_sentiment
+from enrichment.sentiment_santiment import fetch_santiment_data
+from enrichment.news_newsapi import fetch_news
+from enrichment.catalyst_coingecko import fetch_catalysts
+from alert import send_telegram_alert
+from save import save_to_dashboard
 
-def main():
-    assets = discover_assets()
-    enriched = []
+def run_scan():
+    tickers = discover_tickers()
+    results = []
 
-    for asset in assets:
+    for symbol in tickers:
         try:
-            data = enrich_asset(asset)
-            if data.get("meets_criteria"):
-                enriched.append(data)
-                send_telegram_alert(data)
-        except Exception as e:
-            print(f"Error enriching {asset}: {e}")
+            indicators = compute_indicators(symbol)
+            sentiment = enrich_sentiment(symbol)
+            lunar = fetch_lunarcrush_sentiment(symbol)
+            santiment = fetch_santiment_data(symbol)
+            news = fetch_news(symbol)
+            catalysts = fetch_catalysts(symbol)
 
-    with open("docs/data.json", "w") as f:
-        json.dump(enriched, f, indent=2)
+            enriched = {
+                **indicators,
+                "sentiment_score": sentiment,
+                "lunarcrush": lunar,
+                "santiment": santiment,
+                "news": news,
+                "catalysts": catalysts
+            }
+
+            if indicators["RSI"] < 30 and indicators["MACD"] == "Bullish" and indicators["RVOL"] > 2 and sentiment > 0.5:
+                send_telegram_alert(enriched)
+
+            results.append(enriched)
+
+        except Exception as e:
+            results.append({"symbol": symbol, "error": str(e)})
+
+    save_to_dashboard(results)
 
 if __name__ == "__main__":
-    main()
+    run_scan()
