@@ -12,7 +12,7 @@ def get_news_score(symbol):
     try:
         res = requests.get(url).json()
         articles = res.get("articles", [])
-        score = sum(1 for a in articles if "bullish" in a["title"].lower() or "surge" in a["description"].lower())
+        score = sum(1 for a in articles if a.get("title") and "bullish" in a["title"].lower())
         normalized = round(score / max(len(articles), 1), 2)
         print(f"✅ News score for {symbol}: {normalized}")
         return normalized
