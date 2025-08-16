@@ -22,7 +22,7 @@ TP: ${asset['TP']} | SL: ${asset['SL']}"""
     }
 
     r = requests.post(url, json=payload)
-    if r.status_code != 200:
-        print(f"❌ Telegram error: {r.text}")
-    else:
+    if r.status_code == 200:
         print(f"✅ Alert sent for {asset['symbol']}")
+    else:
+        print(f"❌ Telegram error: {r.text}")
