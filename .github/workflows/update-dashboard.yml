@@ -3,8 +3,8 @@ name: Update Crypto Dashboard
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'     # BST: every hour at :00
-    - cron: '45 * * * *'    # BST: every hour at :45
+    - cron: '0 * * * *'
+    - cron: '45 * * * *'
 
 jobs:
   update-dashboard:
@@ -14,7 +14,6 @@ jobs:
       API_KEY_ALPHA: ${{ secrets.API_KEY_ALPHA }}
       API_KEY_LUNARCRUSH: ${{ secrets.API_KEY_LUNARCRUSH }}
       API_KEY_SANTIMENT: ${{ secrets.API_KEY_SANTIMENT }}
-      API_KEY_NEWSAPI: ${{ secrets.API_KEY_NEWSAPI }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       GH_PAT: ${{ secrets.GH_PAT }}
