@@ -11,8 +11,9 @@ button {
   border: none;
   cursor: pointer;
 }
-#dashboard {
-  margin-top: 20px;
-  white-space: pre-wrap;
-  font-size: 14px;
+.card {
+  background: #1e1e1e;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-left: 5px solid orange;
 }
