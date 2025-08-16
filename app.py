@@ -1,56 +1,53 @@
-import json, traceback
-from discover import discover_tickers
-from indicators import compute_indicators
-from sentiment import enrich_sentiment
-from enrichment.sentiment_lunarcrush import fetch_lunarcrush_sentiment
-from enrichment.sentiment_santiment import fetch_santiment_data
-from enrichment.news_newsapi import fetch_news
-from enrichment.catalyst_coingecko import fetch_catalysts
-from alert import send_telegram_alert
-from save import save_to_dashboard
+from discover import get_top_tickers
+from indicators import get_indicators
+from sentiment import get_sentiment
+from enrichment.catalyst_coingecko import get_price
+from enrichment.news_newsapi import get_news_score
+from save import save_to_json
+from alert import send_alert
 
-def run_scan():
-    tickers = discover_tickers()
-    if not tickers:
-        print("⚠️ No tickers discovered.")
-        return
+def enrich(coin_id):
+    symbol = coin_id.upper()
+    try:
+        price = get_price(coin_id)
+        indicators = get_indicators(symbol)
+        sentiment_score = get_sentiment(symbol)
+        news_score = get_news_score(symbol)
 
-    results = []
+        if not indicators or not price:
+            return None
 
-    for symbol in tickers:
-        try:
-            indicators = compute_indicators(symbol)
-            sentiment_score = enrich_sentiment(symbol)
-            lunar = fetch_lunarcrush_sentiment(symbol)
-            santiment = fetch_santiment_data(symbol)
-            news = fetch_news(symbol)
-            catalysts = fetch_catalysts(symbol)
+        TP = round(price * 1.1, 2)
+        SL = round(price * 0.9, 2)
 
-            enriched = {
-                **indicators,
-                "sentiment_score": sentiment_score,
-                "lunarcrush": lunar,
-                "santiment": santiment,
-                "news": news,
-                "catalysts": catalysts
-            }
+        asset = {
+            "symbol": symbol,
+            "price": price,
+            "RSI": indicators["RSI"],
+            "MACD": indicators["MACD"],
+            "RVOL": indicators["RVOL"],
+            "sentiment_score": sentiment_score,
+            "TP": TP,
+            "SL": SL
+        }
 
-            if (
-                indicators["RSI"] < 30 and
-                indicators["MACD"] == "Bullish" and
-                indicators["RVOL"] > 2 and
-                sentiment_score > 0.5
-            ):
-                send_telegram_alert(enriched)
+        send_alert(asset)
+        return asset
+    except Exception as e:
+        print(f"❌ Error enriching {symbol}: {e}")
+        return None
 
-            results.append(enriched)
+def main():
+    tickers = get_top_tickers()
+    enriched = []
 
-        except Exception as e:
-            print(f"❌ Error processing {symbol}: {e}")
-            traceback.print_exc()
-            results.append({"symbol": symbol, "error": str(e)})
+    for coin_id in tickers:
+        asset = enrich(coin_id)
+        if asset:
+            enriched.append(asset)
 
-    save_to_dashboard(results)
+    save_to_json(enriched)
+    print(f"✅ Saved {len(enriched)} assets")
 
 if __name__ == "__main__":
-    run_scan()
+    main()
