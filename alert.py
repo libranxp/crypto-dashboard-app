@@ -11,7 +11,7 @@ def send_alert(asset):
     msg = f"""📊 *{asset['symbol']} Alert*
 Price: ${asset['price']}
 RSI: {asset['RSI']} | MACD: {asset['MACD']} | RVOL: {asset['RVOL']}
-Sentiment: {asset['sentiment_score']}
+News Sentiment: {asset['news_score']}
 TP: ${asset['TP']} | SL: ${asset['SL']}"""
 
     url = f"https://api.telegram.org/bot{token}/sendMessage"
