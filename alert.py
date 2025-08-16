@@ -8,10 +8,12 @@ def send_alert(asset):
         print("⚠️ Telegram credentials missing.")
         return
 
-    msg = f"""📊 *{asset['symbol'].upper()} Alert*
+    msg = f"""📊 *{asset['symbol'].upper()} Scanner Alert*
 Price: ${asset['price']}
 RSI: {asset['RSI']} | MACD: {asset['MACD']} | RVOL: {asset['RVOL']}
-News Sentiment: {asset['news_score']}
+EMA: {asset['EMA']}
+VWAP: {asset['VWAP']}
+Sentiment: {asset['news_score']}
 TP: ${asset['TP']} | SL: ${asset['SL']}"""
 
     url = f"https://api.telegram.org/bot{token}/sendMessage"
