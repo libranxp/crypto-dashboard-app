@@ -1,27 +1,14 @@
-import requests
-import os
+import requests, os
 
 def send_telegram_alert(data):
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     chat_id = os.getenv("TELEGRAM_CHAT_ID")
-
-    if not token or not chat_id:
-        print("Telegram credentials missing.")
-        return
-
-    msg = f"🚨 Signal: {data['symbol']}\n"
-    msg += f"📈 RSI: {data['rsi']:.2f}\n"
-    msg += f"📊 MACD: {data['macd']:.2f}\n"
-    msg += f"🧠 Sentiment: {data['sentiment_score']:.2f}\n"
-    msg += f"🔗 [View Chart](https://www.tradingview.com/symbols/{data['symbol']})"
-
+    msg = (
+        f"🚨 {data['symbol']} Alert\n"
+        f"💰 Price: {data['price']} | TP: {data['TP']} | SL: {data['SL']}\n"
+        f"📊 RSI: {data['RSI']} | EMA: {data['EMA']} | VWAP: {data['VWAP']}\n"
+        f"📈 MACD: {data['MACD']} | RVOL: {data['RVOL']}\n"
+        f"🧠 Sentiment Score: {data['sentiment_score']:.2f}\n"
+    )
     url = f"https://api.telegram.org/bot{token}/sendMessage"
-    payload = {
-        "chat_id": chat_id,
-        "text": msg,
-        "parse_mode": "Markdown"
-    }
-
-    response = requests.post(url, json=payload)
-    if response.status_code != 200:
-        print(f"Telegram error: {response.text}")
+    requests.post(url, data={"chat_id": chat_id, "text": msg})
