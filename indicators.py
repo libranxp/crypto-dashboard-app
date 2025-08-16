@@ -1,8 +1,7 @@
-import requests, os
-import numpy as np
+import requests, numpy as np, os
 
 def fetch_price_data(symbol):
-    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval=5min&apikey={os.getenv('API_KEY_ALPHA')}"
+    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}USD&interval=5min&apikey={os.getenv('API_KEY_ALPHA')}"
     r = requests.get(url).json()
     if 'Time Series (5min)' not in r:
         raise ValueError(f"No data for {symbol}")
@@ -45,10 +44,18 @@ def detect_macd_crossover(prices):
     signal = calculate_ema([macd] + prices[:8], 9)
     return "Bullish" if macd > signal else "Bearish"
 
+def calculate_tp_sl(prices):
+    high = max(prices[:20])
+    low = min(prices[:20])
+    tp = round(prices[0] * 1.05, 2)
+    sl = round(prices[0] * 0.95, 2)
+    return tp, sl
+
 def compute_indicators(symbol):
     data = fetch_price_data(symbol)
     prices = [float(v['close']) for v in data.values()]
     latest = prices[0]
+    tp, sl = calculate_tp_sl(prices)
     return {
         'symbol': symbol,
         'price': latest,
@@ -56,5 +63,8 @@ def compute_indicators(symbol):
         'EMA': calculate_ema(prices),
         'VWAP': calculate_vwap(data),
         'MACD': detect_macd_crossover(prices),
-        'RVOL': calculate_rvol(data)
+        'RVOL': calculate_rvol(data),
+        'TP': tp,
+        'SL': sl,
+        'chart': prices[:30]
     }
