@@ -9,6 +9,11 @@ def discover_tickers():
         "page": 1,
         "sparkline": False
     }
-    res = requests.get(url, params=params).json()
-    # Return actual trading symbols like BTC, ETH
-    return [coin["symbol"].upper() for coin in res if coin.get("symbol")]
+    try:
+        res = requests.get(url, params=params).json()
+        tickers = [coin["symbol"].upper() for coin in res if coin.get("symbol")]
+        print(f"✅ Fetched {len(tickers)} tickers from CoinGecko")
+        return tickers
+    except Exception as e:
+        print(f"❌ Failed to fetch tickers: {e}")
+        return []
