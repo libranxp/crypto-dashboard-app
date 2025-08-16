@@ -9,5 +9,9 @@ def discover_tickers():
         "page": 1,
         "sparkline": False
     }
-    r = requests.get(url, params=params).json()
-    return [coin["symbol"].upper() for coin in r]
+    try:
+        r = requests.get(url, params=params).json()
+        return [coin["symbol"].upper() for coin in r if coin.get("symbol")]
+    except Exception as e:
+        print(f"⚠️ Ticker discovery failed: {e}")
+        return []
