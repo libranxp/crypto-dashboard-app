@@ -1,21 +1,18 @@
 import requests, os
 
-def send_telegram_alert(data):
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CHAT_ID")
-    if not token or not chat_id:
-        print("⚠️ Telegram credentials missing.")
-        return
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-    msg = (
-        f"🚨 {data['symbol']} Alert\n"
-        f"💰 Price: {data['price']} | TP: {data['TP']} | SL: {data['SL']}\n"
-        f"📊 RSI: {data['RSI']} | EMA: {data['EMA']} | VWAP: {data['VWAP']}\n"
-        f"📈 MACD: {data['MACD']} | RVOL: {data['RVOL']}\n"
-        f"🧠 Sentiment Score: {data['sentiment_score']:.2f}\n"
-    )
-
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
-    r = requests.post(url, data={"chat_id": chat_id, "text": msg})
-    if r.status_code != 200:
-        print(f"❌ Telegram alert failed: {r.text}")
+def send_alert(asset):
+    msg = f"""📊 *{asset['symbol'].upper()} Alert*
+Price: ${asset['price']}
+RSI: {asset['RSI']} | MACD: {asset['MACD']} | RVOL: {asset['RVOL']}
+Sentiment: {asset['sentiment_score']}
+TP: ${asset['TP']} | SL: ${asset['SL']}"""
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    payload = {
+        "chat_id": CHAT_ID,
+        "text": msg,
+        "parse_mode": "Markdown"
+    }
+    requests.post(url, json=payload)
