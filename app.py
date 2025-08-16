@@ -1,20 +1,21 @@
-from discover import get_top_tickers
+import json
+from discover import discover_tickers
 from indicators import get_indicators
 from sentiment import get_sentiment
 from enrichment.catalyst_coingecko import get_price
 from enrichment.news_newsapi import get_news_score
-from save import save_to_json
 from alert import send_alert
+from save import save_to_json
 
-def enrich(coin_id):
-    symbol = coin_id.upper()
+def enrich(symbol):
     try:
-        price = get_price(coin_id)
+        price = get_price(symbol)
         indicators = get_indicators(symbol)
         sentiment_score = get_sentiment(symbol)
         news_score = get_news_score(symbol)
 
-        if not indicators or not price:
+        if not price or not indicators or sentiment_score is None:
+            print(f"⚠️ Skipping {symbol} due to missing data")
             return None
 
         TP = round(price * 1.1, 2)
@@ -31,23 +32,25 @@ def enrich(coin_id):
             "SL": SL
         }
 
-        send_alert(asset)
+        if asset["RSI"] < 30 and asset["MACD"] > 0 and asset["RVOL"] > 2 and asset["sentiment_score"] > 0.5:
+            send_alert(asset)
+
         return asset
     except Exception as e:
         print(f"❌ Error enriching {symbol}: {e}")
         return None
 
 def main():
-    tickers = get_top_tickers()
+    tickers = discover_tickers()
     enriched = []
 
-    for coin_id in tickers:
-        asset = enrich(coin_id)
+    for symbol in tickers:
+        asset = enrich(symbol)
         if asset:
             enriched.append(asset)
 
     save_to_json(enriched)
-    print(f"✅ Saved {len(enriched)} assets")
+    print(f"✅ Saved {len(enriched)} assets to docs/data.json")
 
 if __name__ == "__main__":
     main()
