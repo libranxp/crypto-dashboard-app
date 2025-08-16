@@ -1,16 +1,16 @@
 import requests, os
 
-def fetch_lunarcrush_sentiment(symbol):
-    key = os.getenv("API_KEY_LUNARCRUSH")
-    url = f"https://api.lunarcrush.com/v2?data=assets&key={key}&symbol={symbol}"
-    try:
-        res = requests.get(url).json()
-        asset = res.get('data', [{}])[0]
-        return {
-            'galaxy_score': asset.get('galaxy_score'),
-            'alt_rank': asset.get('alt_rank'),
-            'volatility': asset.get('volatility'),
-            'social_score': asset.get('social_score')
-        }
-    except Exception as e:
-        return {'error': str(e)}
+API_KEY = os.getenv("API_KEY_LUNARCRUSH")
+
+def get_lunarcrush_sentiment(symbol):
+    url = f"https://api.lunarcrush.com/v2"
+    params = {
+        "data": "assets",
+        "symbol": symbol.upper(),
+        "key": API_KEY
+    }
+    res = requests.get(url, params=params).json()
+    assets = res.get("data", [])
+    if assets:
+        return round(assets[0].get("galaxy_score", 0) / 100, 2)
+    return None
