@@ -11,6 +11,7 @@ async function refresh() {
     }
 
     data.forEach(asset => {
+      if (!asset.price) return;
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
