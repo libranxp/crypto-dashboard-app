@@ -1,0 +1,18 @@
+body {
+  background-color: #121212;
+  color: white;
+  font-family: Arial;
+  padding: 20px;
+}
+button {
+  background-color: orange;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+#dashboard {
+  margin-top: 20px;
+  white-space: pre-wrap;
+  font-size: 14px;
+}
