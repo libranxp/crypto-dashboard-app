@@ -1,52 +1,19 @@
-from scanner import scan_tickers
+from scanner import discover_tickers
 from indicators import get_indicators
-from enrichment.news_newsapi import get_news_score
-from alert import send_alert
-from save import save_to_json
+from news import get_news_score
+from alerts import send_telegram_alert
+import json
 
-def enrich(symbol):
-    print(f"🔍 Enriching {symbol}")
-    try:
-        indicators = get_indicators(symbol)
-        news_score = get_news_score(symbol)
-
-        if not indicators or news_score is None or news_score < 0.6:
-            print(f"⚠️ Skipping {symbol} due to missing or weak data")
-            return None
-
-        TP = round(indicators["price"] * 1.1, 2)
-        SL = round(indicators["price"] * 0.9, 2)
-
-        asset = {
-            "symbol": symbol,
-            "price": indicators["price"],
-            "RSI": indicators["RSI"],
-            "MACD": indicators["MACD"],
-            "RVOL": indicators["RVOL"],
-            "EMA": indicators["EMA"],
-            "VWAP": indicators["VWAP"],
-            "news_score": news_score,
-            "TP": TP,
-            "SL": SL
-        }
-
-        send_alert(asset)
-        return asset
-    except Exception as e:
-        print(f"❌ Error enriching {symbol}: {e}")
-        return None
-
-def main():
-    tickers = scan_tickers()
-    print(f"✅ Scanner found {len(tickers)} qualifying tickers")
-
+def run():
+    tickers = discover_tickers()
     enriched = []
-    for symbol in tickers:
-        asset = enrich(symbol)
-        if asset:
-            enriched.append(asset)
 
-    save_to_json(enriched)
+    for coin in tickers:
+        coin_id = coin["id"]
+        print(f"🔍 Enriching {coin_id}")
 
-if __name__ == "__main__":
-    main()
+        indicators = get_indicators(coin_id)
+        news = get_news_score(coin_id)
+
+        if not indicators or not news:
+            print(f"⚠️ Sk
