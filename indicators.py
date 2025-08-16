@@ -2,19 +2,22 @@ import requests
 
 def get_indicators(coin_id):
     try:
-        ohlc_url = f"https://api.coingecko.com/api/v3/coins/{coin_id}/ohlc"
-        ohlc_params = {"vs_currency": "usd", "days": 1}
-        ohlc_res = requests.get(ohlc_url, params=ohlc_params).json()
+        url = f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart"
+        params = {
+            "vs_currency": "usd",
+            "days": 1,
+            "interval": "hourly"
+        }
+        res = requests.get(url, params=params).json()
+        prices = [p[1] for p in res.get("prices", [])]
+        volumes = [v[1] for v in res.get("total_volumes", [])]
 
-        if not ohlc_res or len(ohlc_res) < 30:
-            print(f"⚠️ Not enough OHLC data for {coin_id}")
+        if len(prices) < 30 or len(volumes) < 30:
+            print(f"⚠️ Not enough market data for {coin_id}")
             return None
 
-        closes = [c[4] for c in ohlc_res]
-        volumes = [c[5] if len(c) > 5 else 0 for c in ohlc_res]
-
         # RSI
-        deltas = [closes[i] - closes[i-1] for i in range(1, len(closes))]
+        deltas = [prices[i] - prices[i-1] for i in range(1, len(prices))]
         gains = [d for d in deltas if d > 0]
         losses = [-d for d in deltas if d < 0]
         avg_gain = sum(gains[-14:]) / 14 if gains else 0.01
@@ -23,19 +26,19 @@ def get_indicators(coin_id):
         rsi = round(100 - (100 / (1 + rs)), 2)
 
         # MACD
-        ema12 = sum(closes[-12:]) / 12
-        ema26 = sum(closes[-26:]) / 26
+        ema12 = sum(prices[-12:]) / 12
+        ema26 = sum(prices[-26:]) / 26
         macd = round(ema12 - ema26, 2)
 
         # EMA Alignment
-        ema5 = sum(closes[-5:]) / 5
-        ema13 = sum(closes[-13:]) / 13
-        ema50 = sum(closes[-50:]) / 50 if len(closes) >= 50 else ema13
+        ema5 = sum(prices[-5:]) / 5
+        ema13 = sum(prices[-13:]) / 13
+        ema50 = sum(prices[-50:]) / 50 if len(prices) >= 50 else ema13
         ema_alignment = ema5 > ema13 > ema50
 
         # VWAP
-        vwap = round(sum([closes[i] * volumes[i] for i in range(len(closes))]) / sum(volumes), 2)
-        vwap_proximity = abs(closes[-1] - vwap) / vwap <= 0.02
+        vwap = round(sum([prices[i] * volumes[i] for i in range(len(prices))]) / sum(volumes), 2)
+        vwap_proximity = abs(prices[-1] - vwap) / vwap <= 0.02
 
         # RVOL
         current_volume = volumes[-1]
@@ -46,7 +49,7 @@ def get_indicators(coin_id):
             return None
 
         return {
-            "price": round(closes[-1], 2),
+            "price": round(prices[-1], 2),
             "RSI": rsi,
             "MACD": macd,
             "RVOL": rvol,
