@@ -29,7 +29,9 @@ def main():
 
     with open("docs/data.json", "w") as f:
         json.dump(qualified, f, indent=2)
-    print("✅ Saved dashboard data to docs/data.json")
+    print(f"✅ Saved dashboard data to docs/data.json")
+    print(f"📊 Final dashboard contains {len(qualified)} assets")
+    print("✅ Pipeline complete")
 
 if __name__ == "__main__":
     main()
