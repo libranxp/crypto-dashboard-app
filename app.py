@@ -16,6 +16,10 @@ def enrich_asset(symbol):
         indicators = compute_indicators(ohlc)
         sentiment = fetch_sentiment(symbol)
 
+        if not indicators or not sentiment:
+            print(f"⚠️ Skipping {symbol}: failed filters")
+            return None
+
         return {
             "symbol": symbol,
             "price": ohlc[-1]["close"],
@@ -24,28 +28,4 @@ def enrich_asset(symbol):
         }
 
     except Exception as e:
-        print(f"⚠️ Skipping {symbol}: {e}")
-        return None
-
-def main():
-    tickers = get_dynamic_tickers()
-    print(f"✅ Scanner found {len(tickers)} tickers")
-
-    enriched = []
-    for symbol in tickers:
-        asset = enrich_asset(symbol)
-        if asset:
-            enriched.append(asset)
-            process_alert(
-                symbol=asset["symbol"],
-                price=asset["price"],
-                indicators=asset["indicators"],
-                sentiment=asset["sentiment"]
-            )
-
-    with open("docs/data.json", "w") as f:
-        json.dump(enriched, f, indent=2)
-    print(f"✅ Saved {len(enriched)} assets to docs/data.json")
-
-if __name__ == "__main__":
-    main()
+        print(f"⚠️
