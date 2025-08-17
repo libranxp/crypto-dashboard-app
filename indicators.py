@@ -1,3 +1,43 @@
+import numpy as np
+
+def compute_rsi(data, period=14):
+    closes = [c["close"] for c in data]
+    if len(closes) < period + 1:
+        return 0
+
+    deltas = np.diff(closes)
+    gains = np.where(deltas > 0, deltas, 0)
+    losses = np.where(deltas < 0, -deltas, 0)
+
+    avg_gain = np.mean(gains[-period:])
+    avg_loss = np.mean(losses[-period:])
+
+    if avg_loss == 0:
+        return 100
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+    return round(rsi, 2)
+
+def compute_rvol(data, window=20):
+    volumes = [c["volume"] for c in data]
+    if len(volumes) < window + 1:
+        return 0
+
+    recent = volumes[-1]
+    avg = np.mean(volumes[-window:])
+    if avg == 0:
+        return 0
+    rvol = recent / avg
+    return round(rvol, 2)
+
+def detect_pump(data, threshold=1.2):
+    closes = [c["close"] for c in data]
+    if len(closes) < 2:
+        return False
+
+    change = closes[-1] / closes[-2]
+    return change > threshold
+
 def enrich_indicators(ohlc_data):
     enriched = []
 
