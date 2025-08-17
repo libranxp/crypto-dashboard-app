@@ -1,18 +1,28 @@
 import requests
 
-def get_dynamic_tickers(limit=25):
+def discover_tickers(limit=100):
     url = "https://api.coingecko.com/api/v3/coins/markets"
     params = {
         "vs_currency": "usd",
-        "order": "market_cap_desc",
+        "order": "volume_desc",
         "per_page": limit,
         "page": 1,
         "sparkline": False
     }
-    try:
-        res = requests.get(url, params=params, timeout=10).json()
-        tickers = [coin["id"] for coin in res if coin.get("id")]
-        return tickers
-    except Exception as e:
-        print(f"⚠️ Scanner error: {e}")
-        return []
+    r = requests.get(url, params=params)
+    data = r.json()
+
+    tickers = []
+    for d in data:
+        symbol = d["symbol"].upper()
+        id = d["id"]
+        tags = fetch_tags(id)
+        tickers.append({"symbol": symbol, "id": id, "tags": tags})
+    return tickers
+
+def fetch_tags(coin_id):
+    url = f"https://api.coingecko.com/api/v3/coins/{coin_id}"
+    r = requests.get(url)
+    data = r.json()
+    categories = data.get("categories", [])
+    return categories[:3]  # top 3 tags
