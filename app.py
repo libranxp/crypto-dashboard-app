@@ -3,7 +3,6 @@ from scanner import get_dynamic_tickers
 from ohlc import fetch_ohlc_data
 from indicators import compute_indicators
 from news import fetch_sentiment
-from resolve_symbol import resolve_symbol
 from alerts import process_alert
 
 def enrich_asset(symbol):
@@ -16,14 +15,12 @@ def enrich_asset(symbol):
 
         indicators = compute_indicators(ohlc)
         sentiment = fetch_sentiment(symbol)
-        resolved = resolve_symbol(symbol)
 
         return {
             "symbol": symbol,
             "price": ohlc[-1]["close"],
             "indicators": indicators,
-            "sentiment": sentiment,
-            "resolved": resolved
+            "sentiment": sentiment
         }
 
     except Exception as e:
