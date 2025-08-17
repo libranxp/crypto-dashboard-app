@@ -29,8 +29,10 @@ def send_alerts(assets):
 
 def format_alert(asset):
     return (
-        f"*{asset['symbol']}* triggered:\n"
+        f"*{asset['symbol'].upper()}* triggered:\n"
         f"Price: ${asset['price']}\n"
         f"RSI: {asset['rsi']} | RVOL: {asset['rvol']}\n"
         f"TP: ${asset['tp_price']} | SL: ${asset['sl_price']} | Risk: {asset['risk_ratio']}\n"
-        f
+        f"Sentiment: {asset.get('sentiment', 'N/A')}\n"
+        f"[View on CoinGecko](https://www.coingecko.com/en/coins/{asset['symbol']})"
+    )
