@@ -9,10 +9,10 @@ def discover_tickers():
         response.raise_for_status()
 
         coins = response.json()
-        raw = [coin["symbol"].upper() for coin in coins if coin.get("symbol")]
+        raw = [coin["id"] for coin in coins if coin.get("id")]
 
-        # Filter: only alphanumeric tickers, 2–10 chars
-        tickers = [s for s in raw if re.match(r"^[A-Z0-9]{2,10}$", s)]
+        # Filter: only lowercase alphanumeric IDs, 2–20 chars
+        tickers = [s for s in raw if re.match(r"^[a-z0-9\-]{2,20}$", s)]
 
         print(f"✅ Fetched {len(tickers)} clean tickers from CoinGecko")
         return tickers[:100]  # Limit for performance
