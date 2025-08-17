@@ -32,4 +32,9 @@ def send_alerts(assets):
             f"Sentiment: {a['sentiment']} | Tags: {', '.join(a['tags'])}"
         )
         url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-        payload = {"chat_id": CHAT_ID, "text
+        payload = {"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"}
+        requests.post(url, data=payload)
+
+        alerts[symbol] = now.isoformat()
+
+    save_alerts(alerts)
