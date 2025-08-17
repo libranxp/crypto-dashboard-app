@@ -28,4 +28,9 @@ def send_alerts(assets):
             print(f"❌ Exception sending alert: {e}")
 
 def format_alert(asset):
-    return f"*{asset['symbol']}* triggered:\nRSI: {asset['rsi']:.1f}\nRVOL: {asset['rvol']:.2f}\nSentiment: {asset.get('sentiment', 'N/A')}"
+    return (
+        f"*{asset['symbol']}* triggered:\n"
+        f"Price: ${asset['price']}\n"
+        f"RSI: {asset['rsi']} | RVOL: {asset['rvol']}\n"
+        f"TP: ${asset['tp_price']} | SL: ${asset['sl_price']} | Risk: {asset['risk_ratio']}\n"
+        f
