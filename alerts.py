@@ -12,11 +12,11 @@ def send_alerts(assets):
     for asset in assets:
         msg = (
             f"📈 *{asset['symbol'].upper()}* Alert\n"
+            f"Type: {asset['asset_type']}\n"
             f"Price: ${asset['price']}\n"
             f"RSI: {asset['rsi']} | RVOL: {asset['rvol']}\n"
             f"TP: ${asset['tp_price']} | SL: ${asset['sl_price']}\n"
             f"Risk Ratio: {asset['risk_ratio']}\n"
-            f"Sentiment: {asset.get('sentiment_score', 'N/A')}\n"
             f"[View on CoinGecko](https://www.coingecko.com/en/coins/{asset['symbol']})"
         )
         try:
