@@ -47,13 +47,22 @@ def enrich_indicators(ohlc_data):
             rvol = compute_rvol(data)
             pump = detect_pump(data)
 
+            price = data[-1]["close"]
+            tp = round(price * 1.1, 4)
+            sl = round(price * 0.95, 4)
+            risk = round((tp - price) / (price - sl), 2)
+
             qualified = rsi > 40 and rvol > 1 and not pump
 
             enriched.append({
                 "symbol": coin_id,
+                "price": round(price, 4),
                 "rsi": rsi,
                 "rvol": rvol,
                 "pump": pump,
+                "tp_price": tp,
+                "sl_price": sl,
+                "risk_ratio": risk,
                 "qualified": qualified
             })
         except Exception as e:
