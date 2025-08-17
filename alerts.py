@@ -1,38 +1,23 @@
-import os
 import requests
 
+TELEGRAM_TOKEN = "your_token_here"
+TELEGRAM_CHAT_ID = "your_chat_id_here"
+
 def send_alerts(assets):
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CHAT_ID")
-
-    if not token or not chat_id:
-        print("❌ Missing Telegram credentials")
-        return
-
-    if not assets:
-        print("⚠️ No qualified assets to alert")
-        return
-
     for asset in assets:
-        msg = format_alert(asset)
-        url = f"https://api.telegram.org/bot{token}/sendMessage"
-        payload = {"chat_id": chat_id, "text": msg, "parse_mode": "Markdown"}
-
+        msg = (
+            f"📈 *{asset['symbol']}* Alert\n"
+            f"Price: ${asset['price']}\n"
+            f"RSI: {asset['rsi']} | RVOL: {asset['rvol']}\n"
+            f"TP: ${asset['tp_price']} | SL: ${asset['sl_price']}\n"
+            f"Risk Ratio: {asset['risk_ratio']}\n"
+            f"Sentiment: {asset['sentiment_score']}\n"
+            f"[View Chart](https://www.tradingview.com/symbols/{asset['symbol'].upper()}USDT)"
+        )
         try:
-            r = requests.post(url, json=payload)
-            if r.status_code == 200:
-                print(f"📣 Alert sent for {asset['symbol']}")
-            else:
-                print(f"❌ Failed to send alert for {asset['symbol']}: {r.text}")
+            requests.post(
+                f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+                data={"chat_id": TELEGRAM_CHAT_ID, "text": msg, "parse_mode": "Markdown"}
+            )
         except Exception as e:
-            print(f"❌ Exception sending alert: {e}")
-
-def format_alert(asset):
-    return (
-        f"*{asset['symbol'].upper()}* triggered:\n"
-        f"Price: ${asset['price']}\n"
-        f"RSI: {asset['rsi']} | RVOL: {asset['rvol']}\n"
-        f"TP: ${asset['tp_price']} | SL: ${asset['sl_price']} | Risk: {asset['risk_ratio']}\n"
-        f"Sentiment: {asset.get('sentiment', 'N/A')}\n"
-        f"[View on CoinGecko](https://www.coingecko.com/en/coins/{asset['symbol']})"
-    )
+            print(f"❌ Telegram error for {asset['symbol']}: {e}")
