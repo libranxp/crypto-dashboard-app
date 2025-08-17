@@ -8,21 +8,54 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <h1>📊 Crypto Dashboard</h1>
+  <header>
+    <h1>📊 Crypto Dashboard</h1>
+    <div class="filters">
+      <label>RSI ≥
+        <input type="number" id="rsiFilter" value="30" min="0" max="100" />
+      </label>
+      <label>RVOL ≥
+        <input type="number" id="rvolFilter" value="0.5" step="0.1" />
+      </label>
+      <label>Sentiment:
+        <select id="sentimentFilter">
+          <option value="">Any</option>
+          <option value="positive">Positive</option>
+          <option value="neutral">Neutral</option>
+          <option value="negative">Negative</option>
+        </select>
+      </label>
+      <label>Asset Type:
+        <select id="typeFilter">
+          <option value="">Any</option>
+          <option value="meme">Meme</option>
+          <option value="defi">DeFi</option>
+          <option value="ai">AI</option>
+          <option value="unknown">Unknown</option>
+        </select>
+      </label>
+      <button onclick="applyFilters()">Apply Filters</button>
+    </div>
+  </header>
 
-  <div class="filters">
-    <label>RSI &gt; <input type="number" id="rsiFilter" value="30" /></label>
-    <label>RVOL &gt; <input type="number" id="rvolFilter" value="0.5" step="0.1" /></label>
-    <label>Sentiment: <select id="sentimentFilter">
-      <option value="">Any</option>
-      <option value="positive">Positive</option>
-      <option value="neutral">Neutral</option>
-      <option value="negative">Negative</option>
-    </select></label>
-    <button onclick="applyFilters()">Apply Filters</button>
-  </div>
+  <main>
+    <div id="dashboard" class="grid"></div>
+  </main>
 
-  <div id="dashboard"></div>
+  <template id="card-template">
+    <div class="card">
+      <h2 class="symbol"></h2>
+      <p class="type"></p>
+      <p>Price: <span class="price"></span></p>
+      <p>RSI: <span class="rsi"></span></p>
+      <p>RVOL: <span class="rvol"></span></p>
+      <p>TP: <span class="tp"></span> | SL: <span class="sl"></span></p>
+      <p>Risk Ratio: <span class="risk"></span></p>
+      <canvas class="chart" width="300" height="150"></canvas>
+      <a class="link" target="_blank">View on CoinGecko</a>
+    </div>
+  </template>
+
   <script src="script.js"></script>
 </body>
 </html>
