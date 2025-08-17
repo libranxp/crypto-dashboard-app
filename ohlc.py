@@ -1,7 +1,7 @@
 from sources.coingecko import fetch_coingecko_ohlc
 from sources.paprika import fetch_paprika_ohlc
 
-def fetch_ohlc(tickers):
+def fetch_ohlc_data(tickers):
     result = {}
     for coin_id in tickers:
         try:
