@@ -10,7 +10,7 @@ def compute_rsi(prices):
     return 100 - (100 / (1 + rs))
 
 def compute_rvol(prices):
-    volumes = np.random.randint(1_000, 10_000, size=len(prices))  # Simulated
+    volumes = np.random.randint(1_000, 10_000, size=len(prices))
     avg_vol = np.mean(volumes[:-24])
     recent_vol = np.mean(volumes[-24:])
     return recent_vol / avg_vol if avg_vol else 0
