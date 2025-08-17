@@ -18,9 +18,8 @@ def enrich_indicators(ohlc_data):
 
             qualified = bool(rsi > 30 and rvol > 0.5 and not pump)
 
-            # Clean OHLC for frontend (Chart.js)
             ohlc_clean = [
-                {"t": c["timestamp"], "c": c["close"], "v": c["volume"]}
+                {"t": int(c["timestamp"] / 1000), "c": c["close"], "v": c["volume"]}
                 for c in data
             ]
 
