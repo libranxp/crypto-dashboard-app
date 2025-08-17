@@ -10,7 +10,7 @@ def compute_rsi(data, period=14):
     avg_gain = np.mean(gains[-period:])
     avg_loss = np.mean(losses[-period:])
     rs = avg_gain / avg_loss if avg_loss else 0.01
-    return round(100 - (100 / (1 + rs)), 2)
+    return 100 - (100 / (1 + rs))
 
 def compute_rvol(data, window=20):
     volumes = [c["volume"] for c in data]
@@ -18,7 +18,7 @@ def compute_rvol(data, window=20):
         return 0
     recent = volumes[-1]
     avg = np.mean(volumes[-window:])
-    return round(recent / avg, 2) if avg else 0
+    return recent / avg if avg else 0
 
 def detect_pump(data, threshold=1.2):
     closes = [c["close"] for c in data]
