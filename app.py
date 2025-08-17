@@ -1,6 +1,6 @@
 from discover import discover_tickers
 from ohlc import fetch_ohlc_data
-from indicators import enrich_indicators
+from modules.indicators import enrich_indicators
 from sentiment import enrich_sentiment
 from alerts import send_alerts
 from dashboard import save_dashboard
