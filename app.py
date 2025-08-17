@@ -1,26 +1,22 @@
 from discover import discover_tickers
 from sources.ohlc import fetch_ohlc_data
 from modules.indicators import enrich_indicators
+from sentiment import enrich_sentiment
 from alerts import send_alerts
-import json
+from dashboard import save_dashboard
 
-def main():
-    print("🚀 Discovering tickers...")
-    tickers = discover_tickers()
-    print(f"✅ Found {len(tickers)} tickers")
+print("🚀 Starting enrichment pipeline...")
 
-    print("📊 Fetching OHLC data...")
-    ohlc_data = fetch_ohlc_data(tickers)
+tickers = discover_tickers()
+print(f"✅ Discovered {len(tickers)} tickers")
 
-    print("🧠 Enriching indicators...")
-    enriched = enrich_indicators(ohlc_data)
+ohlc_data = fetch_ohlc_data(tickers)
+enriched = enrich_indicators(ohlc_data)
+enriched = enrich_sentiment(enriched)
+qualified = [a for a in enriched if a["qualified"]]
 
-    print("📣 Sending alerts...")
-    send_alerts([a for a in enriched if a["qualified"]])
+send_alerts(qualified)
+save_dashboard(enriched)
 
-    print("💾 Saving dashboard data...")
-    with open("docs/data.json", "w") as f:
-        json.dump(enriched, f, indent=2)
-
-if __name__ == "__main__":
-    main()
+print(f"📊 Final dashboard contains {len(enriched)} assets")
+print("✅ Pipeline complete")
