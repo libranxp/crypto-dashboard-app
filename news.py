@@ -1,17 +1,23 @@
-def fetch_sentiment(symbol):
-    try:
-        mentions = 12
-        engagement = 150
-        sentiment_score = 0.65
-        influencer_flag = True
+import random
 
-        if mentions >= 10 and engagement >= 100 and sentiment_score >= 0.6 and influencer_flag:
-            return {
-                "score": sentiment_score,
-                "mentions": mentions,
-                "engagement": engagement,
-                "influencer": influencer_flag
-            }
-    except Exception:
-        pass
-    return None
+def enrich_sentiment(assets):
+    for a in assets:
+        mentions = random.randint(0, 50)
+        engagement = random.randint(0, 500)
+        influencer = random.choice([True, False])
+        sentiment = round(random.uniform(0.3, 0.9), 2)
+
+        a.update({
+            "mentions": mentions,
+            "engagement": engagement,
+            "influencer": influencer,
+            "sentiment": sentiment
+        })
+
+        if a["qualified"]:
+            a["qualified"] = (
+                mentions >= 10 and
+                engagement >= 100 and
+                sentiment >= 0.6
+            )
+    return assets
