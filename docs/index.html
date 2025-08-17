@@ -1,14 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Crypto Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <h1>Crypto Dashboard</h1>
-  <button onclick="refresh()">Refresh</button>
-  <div id="dashboard">Loading...</div>
+  <h1>📊 Crypto Dashboard</h1>
+
+  <div class="filters">
+    <label>RSI &gt; <input type="number" id="rsiFilter" value="30" /></label>
+    <label>RVOL &gt; <input type="number" id="rvolFilter" value="0.5" step="0.1" /></label>
+    <label>Sentiment: <select id="sentimentFilter">
+      <option value="">Any</option>
+      <option value="positive">Positive</option>
+      <option value="neutral">Neutral</option>
+      <option value="negative">Negative</option>
+    </select></label>
+    <button onclick="applyFilters()">Apply Filters</button>
+  </div>
+
+  <div id="dashboard"></div>
   <script src="script.js"></script>
 </body>
 </html>
