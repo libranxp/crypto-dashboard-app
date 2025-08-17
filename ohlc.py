@@ -1,21 +1,11 @@
-import requests
-
-def fetch_ohlc(ticker_objs):
+def fetch_ohlc(tickers):
     result = {}
-    for obj in ticker_objs:
-        symbol = obj["symbol"]
-        coin_id = obj["id"]
+    for symbol in tickers:
         try:
-            url = f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart"
-            params = {"vs_currency": "usd", "days": "1", "interval": "hourly"}
-            r = requests.get(url, params=params)
-            prices = r.json().get("prices", [])
-            if prices:
-                ohlc = [p[1] for p in prices[-50:]]
-                result[symbol] = {
-                    "ohlc": ohlc,
-                    "tags": obj["tags"]
-                }
-        except Exception:
-            continue
+            result[symbol] = fetch_from_primary(symbol)
+        except:
+            try:
+                result[symbol] = fetch_from_fallback(symbol)
+            except Exception as e:
+                print(f"❌ OHLC fetch failed for {symbol}: {e}")
     return result
