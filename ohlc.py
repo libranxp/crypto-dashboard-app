@@ -1,11 +1,10 @@
+from sources.coingecko import fetch_coingecko_ohlc
+
 def fetch_ohlc(tickers):
     result = {}
-    for symbol in tickers:
+    for coin_id in tickers:
         try:
-            result[symbol] = fetch_from_primary(symbol)
-        except:
-            try:
-                result[symbol] = fetch_from_fallback(symbol)
-            except Exception as e:
-                print(f"❌ OHLC fetch failed for {symbol}: {e}")
+            result[coin_id] = fetch_coingecko_ohlc(coin_id)
+        except Exception as e:
+            print(f"❌ OHLC fetch failed for {coin_id}: {e}")
     return result
