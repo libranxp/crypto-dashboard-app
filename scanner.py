@@ -25,4 +25,4 @@ def fetch_tags(coin_id):
     r = requests.get(url)
     data = r.json()
     categories = data.get("categories", [])
-    return categories[:3]  # top 3 tags
+    return categories[:3]
