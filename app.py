@@ -1,9 +1,9 @@
 import json
 from discover import discover_tickers
+from ohlc import fetch_ohlc
 from indicators import enrich_indicators
 from sentiment import enrich_sentiment
 from alerts import send_alerts
-from ohlc import fetch_ohlc  # assumes modular OHLC fetcher
 
 def main():
     print("🚀 Starting enrichment pipeline...")
