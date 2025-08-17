@@ -1,16 +1,17 @@
-from sources.coingecko import fetch_coingecko_ohlc
-from sources.paprika import fetch_paprika_ohlc
+from sources.coingecko import fetch_ohlc_coingecko
+from sources.paprika import fetch_ohlc_paprika
 
 def fetch_ohlc_data(tickers):
-    result = {}
-    for coin_id in tickers:
+    data = {}
+    for symbol in tickers:
         try:
-            result[coin_id] = fetch_coingecko_ohlc(coin_id)
-        except Exception as e1:
-            print(f"⚠️ CoinGecko failed for {coin_id}: {e1}")
-            try:
-                result[coin_id] = fetch_paprika_ohlc(coin_id)
-                print(f"✅ Fallback success for {coin_id} via CoinPaprika")
-            except Exception as e2:
-                print(f"❌ OHLC fetch failed for {coin_id}: {e2}")
-    return result
+            cg = fetch_ohlc_coingecko(symbol)
+            if cg:
+                data[symbol] = cg
+                continue
+            cp = fetch_ohlc_paprika(symbol)
+            if cp:
+                data[symbol] = cp
+        except Exception as e:
+            print(f"❌ OHLC error for {symbol}: {e}")
+    return data
