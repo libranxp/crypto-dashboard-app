@@ -1,18 +1,8 @@
-import requests
+from sources.coingecko import fetch_coingecko_symbols
+from sources.paprika import fetch_paprika_symbols
 
-def discover_tickers(limit=100):
-    print("🔍 Discovering tickers from CoinGecko...")
-    try:
-        url = "https://api.coingecko.com/api/v3/coins/markets"
-        params = {
-            "vs_currency": "usd",
-            "order": "volume_desc",
-            "per_page": limit,
-            "page": 1,
-            "sparkline": False
-        }
-        res = requests.get(url, params=params, timeout=10).json()
-        return [coin["id"] for coin in res if coin.get("id")]
-    except Exception as e:
-        print(f"❌ Discovery failed: {e}")
-        return []
+def discover_tickers():
+    cg = fetch_coingecko_symbols()
+    cp = fetch_paprika_symbols()
+    combined = sorted(set(cg + cp))
+    return [s for s in combined if len(s) >= 3]
