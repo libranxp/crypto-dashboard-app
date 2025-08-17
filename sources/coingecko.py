@@ -1,21 +1,32 @@
 import requests
+import time
 
-def fetch_coingecko_symbols():
-    url = "https://api.coingecko.com/api/v3/coins/list"
+def fetch_ohlc_coingecko(symbol):
+    url = f"https://api.coingecko.com/api/v3/coins/{symbol}/market_chart"
+    params = {
+        "vs_currency": "usd",
+        "days": "1",
+        "interval": "hourly"
+    }
+
     try:
-        res = requests.get(url, timeout=10)
-        res.raise_for_status()
-        coins = res.json()
-        return [coin["id"] for coin in coins if coin.get("id")]
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+        ohlc = []
+        for i in range(len(data["prices"])):
+            ohlc.append({
+                "timestamp": data["prices"][i][0],
+                "open": data["prices"][i][1],
+                "high": data["high_24h"][i][1] if "high_24h" in data else None,
+                "low": data["low_24h"][i][1] if "low_24h" in data else None,
+                "close": data["prices"][i][1],
+                "volume": data["total_volumes"][i][1]
+            })
+
+        return ohlc
+
     except Exception as e:
-        print(f"❌ Error fetching CoinGecko symbols: {e}")
-        return []
-
-def fetch_asset_type(symbol):
-    try:
-        url = f"https://api.coingecko.com/api/v3/coins/{symbol.lower()}"
-        res = requests.get(url, timeout=10).json()
-        categories = res.get("categories", [])
-        return categories[0].lower() if categories else "unknown"
-    except Exception:
-        return "unknown"
+        print(f"❌ CoinGecko OHLC error for {symbol}: {e}")
+        return None
