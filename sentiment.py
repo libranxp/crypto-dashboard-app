@@ -1,3 +1,10 @@
+import os
+
+def fetch_sentiment(symbol):
+    # Stub: Replace with real API calls using your secrets
+    # Example: LunarCrush, Santiment, NewsAPI, Alpha, CryptoCompare
+    return "neutral"
+
 def enrich_sentiment(assets):
     for asset in assets:
         try:
