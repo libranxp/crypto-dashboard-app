@@ -1,12 +1,8 @@
-from enrichment.sentiment_lunarcrush import get_lunarcrush_sentiment
-from enrichment.sentiment_santiment import get_santiment_sentiment
-
-def get_sentiment(symbol):
-    scores = []
-    lunar = get_lunarcrush_sentiment(symbol)
-    if lunar is not None:
-        scores.append(lunar)
-    santiment = get_santiment_sentiment(symbol)
-    if santiment is not None:
-        scores.append(santiment)
-    return round(sum(scores) / len(scores), 2) if scores else None
+def enrich_sentiment(assets):
+    for asset in assets:
+        try:
+            asset["sentiment"] = fetch_sentiment(asset["symbol"])
+        except Exception as e:
+            print(f"⚠️ Sentiment failed for {asset['symbol']}: {e}")
+            asset["sentiment"] = "N/A"
+    return assets
