@@ -1,4 +1,5 @@
 from modules.utils import compute_rsi, compute_rvol, detect_pump
+from sources.coingecko import fetch_asset_type
 
 def enrich_indicators(ohlc_data):
     enriched = []
@@ -15,8 +16,9 @@ def enrich_indicators(ohlc_data):
             tp = round(price * 1.1, 4)
             sl = round(price * 0.95, 4)
             risk = round((tp - price) / max(price - sl, 0.0001), 2)
-
             qualified = bool(rsi > 30 and rvol > 0.5 and not pump)
+
+            asset_type = fetch_asset_type(symbol)
 
             ohlc_clean = [
                 {"t": int(c["timestamp"] / 1000), "c": c["close"], "v": c["volume"]}
@@ -33,6 +35,7 @@ def enrich_indicators(ohlc_data):
                 "sl_price": sl,
                 "risk_ratio": risk,
                 "qualified": qualified,
+                "asset_type": asset_type,
                 "ohlc": ohlc_clean
             })
         except Exception as e:
