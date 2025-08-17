@@ -1,31 +1,21 @@
+from scanner import discover_tickers
+from ohlc import fetch_ohlc
+from indicators import enrich_indicators
+from news import enrich_sentiment
+from alerts import send_alerts
 import json
-from scanner import get_dynamic_tickers
-from ohlc import fetch_ohlc_data
-from indicators import compute_indicators
-from news import fetch_sentiment
-from alerts import process_alert
 
-def enrich_asset(symbol):
-    print(f"🔍 Enriching {symbol}")
-    try:
-        ohlc = fetch_ohlc_data(symbol)
-        if not ohlc:
-            print(f"⚠️ Skipping {symbol}: no OHLC data")
-            return None
+def main():
+    tickers = discover_tickers()
+    ohlc_data = fetch_ohlc(tickers)
+    enriched = enrich_indicators(ohlc_data)
+    enriched = enrich_sentiment(enriched)
+    qualified = [a for a in enriched if a.get("qualified")]
 
-        indicators = compute_indicators(ohlc)
-        sentiment = fetch_sentiment(symbol)
+    send_alerts(qualified)
 
-        if not indicators or not sentiment:
-            print(f"⚠️ Skipping {symbol}: failed filters")
-            return None
+    with open("docs/data.json", "w") as f:
+        json.dump(qualified, f, indent=2)
 
-        return {
-            "symbol": symbol,
-            "price": ohlc[-1]["close"],
-            "indicators": indicators,
-            "sentiment": sentiment
-        }
-
-    except Exception as e:
-        print(f"⚠️
+if __name__ == "__main__":
+    main()
